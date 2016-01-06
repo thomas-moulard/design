@@ -3,7 +3,7 @@ layout: default
 title: Clock and Time
 permalink: articles/clock_and_time.html
 abstract:
-  This article describes the ROS primatives to support programming which can run both in realtime as well as simulated time.
+  This article describes the ROS primitives to support programming which can run both in realtime as well as simulated time.
 published: true
 author: '[Tully Foote](https://github.com/tfoote)'
 ---
@@ -31,10 +31,10 @@ There are however several use cases where being able to control the progress of 
 
 When playing back logged data it is often very valuable to support accelerated, slowed, or stepped control over the progress of time.
 This control can allow you to get to a specific time and pause the system so that you can debug it in depth.
-It is possible to do this with just the playback of the sensor data, however if the sensor data is out of synchronization with the rest of the system it will break many algorithms.
+It is possible to do this with a log of the sensor data, however if the sensor data is out of synchronization with the rest of the system it will break many algorithms.
 
-Another important use case for using an abstracted time source is when you are running against a simulated robot instead of a real robot.
-Depending on the simulation characteristics the simulator may be able to run much faster than realtime or much slower.
+Another important use case for using an abstracted time source is when you are running logged data against a simulated robot instead of a real robot.
+Depending on the simulation characteristics, the simulator may be able to run much faster than realtime or it may need to run much slower.
 Running faster than realtime can be valuable for high level testing as well allowing for repeated system tests.
 Slower than realtime simulation is necessary for complicated systems where accuracy is more important than speed.
 Often the simulation is the limiting factor for the system and as such the simulator can be a time source for faster or slower playback.
@@ -46,16 +46,16 @@ There are many algorithms for synchronization and they can typically achieve acc
 However, these algorithms take advantage of assumptions about the constant and continuous nature of time.
 
 An important aspect of using an abstracted time is to be able to manipulate time.
-In some cases, changing the speed dynamically for example speeding up or slowing down all the way to pause is important for debugging.
+In some cases, speeding up, slowing down, or pausing time entirely is important for debugging.
 
 The ability to support pausing time requires that we not assume that the time values are always increasing.
 
-When communicating the changes in time propagation the latencies in the communication network becomes a challenge.
+When communicating the changes in time propagation, the latencies in the communication network becomes a challenge.
 Any change in the time abstraction must be communicated to the other nodes in the graph, but will be subject to normal network communication latency.
 This inaccuracy is proportional to the latency of communications and also proportional to the increase in the realtime factor.
-As such if very accurate timestamping is required using the time abstraction is required it can be achieved by slowing down the realtime factor such that the communication latency is comparatively small.
+If very accurate timestamping is required when using the time abstraction, it can be achieved by slowing down the realtime factor such that the communication latency is comparatively small.
 
-The final challenge is that to be useful for log file playback the time abstraction must be able to jump backwards in time.
+The final challenge is that the time abstraction must be able to jump backwards in time, a feature that is useful for log file playback.
 This is a very different behavior from most clocks, and requires developers using the time abstraction to make sure their algorithm can deal with the discontinuity.
 
 ## System Behavior
@@ -64,10 +64,10 @@ To implement the time abstraction the following approach will be used.
 
 The time abstraction can be published by one source on the `/clock` topic.
 The topic will contain the latest abstracted time for the ROS system.
-If a publisher exists for the topic it will override the system time when using the ROS time abstraction.
-If `/clock` is being published calls to the ROS time abstraction will return the latest time received from the `/clock` topic with a default of zero if nothing has been received.
+If a publisher exists for the topic, it will override the system time when using the ROS time abstraction.
+If `/clock` is being published, calls to the ROS time abstraction will return the latest time received from the `/clock` topic with a default of zero if nothing has been received.
 
-If the time on the clock jumps backwards a callback handler will be invoked and be required to complete before any calls to the ROS time abstraction report the new time.
+If the time on the clock jumps backwards, a callback handler will be invoked and be required to complete before any calls to the ROS time abstraction report the new time.
 Calls that come in before that must block.
 The developer has the opportunity to register callbacks with the handler to clear any state from their system if necessary before time will be in the past.
 
@@ -77,7 +77,7 @@ The frequency of publishing the `/clock` as well as the granularity are not spec
 
 There are more advanced techniques which could be included to attempt to estimate the propagation properties and extrapolate between time ticks.
 However all of these techniques will require making assumptions about the future behavior of the time abstraction.
-And in the case that playback or simulation is instantaneously paused it will break any of these assumptions.
+And in the case that playback or simulation is instantaneously paused, it will break any of these assumptions.
 There are techniques which would allow potential interpolation, however to make these possible it would require providing guarantees about the continuity of time into the future.
 For more accuracy the progress of time can be slowed, or the frequency of publishing can be increased.
 These are both 
