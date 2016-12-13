@@ -64,7 +64,7 @@ The following primitive types are defined:
 - `string`
 
 <div class="alert alert-warning" markdown="1">
-  <b>TODO:</b> consider <code>wchar</code>, <code>wstring</code>, <code>u16string</code>, <code>u32string</code>
+  <b>TODO:</b> consider <code>wstring</code>, <code>u16string</code>, <code>u32string</code>
 </div>
 
 <div class="alert alert-warning" markdown="1">
@@ -72,7 +72,8 @@ The following primitive types are defined:
 </div>
 
 <div class="alert alert-warning" markdown="1">
-  <b>TODO:</b> consider removing <code>byte</code>, <code>char</code> after specifying the mapping to C++ and Python
+  <b>DEPRECATED</b>
+  <code>byte</code> and <code>char</code> are kept for legacy reasons only, they are respectively translated to <code>int8</code> and <code>uint8</code> before being sent over the wire
 </div>
 
 #### Non-primitive field types
@@ -105,7 +106,7 @@ If no default value is specified a common default value is used:
 - for `string` it is an *empty* string
 
 <div class="alert alert-warning" markdown="1">
-  <b>TODO:</b> default values are currently not supported for <code>string array</code> fields and <i>complex</i> fields
+  <b>TODO:</b> default values are currently not supported for <code>string</code> fields, <code>string array</code> fields and <i>complex</i> fields
 </div>
 
 ### Constants
@@ -186,14 +187,6 @@ Depending on the type the following values are valid:
   - `true`, `1`
   - `false`, `0`
 
-- `byte`:
-
-  - an unsigned integer value in the following interval `[0, 255]`
-
-- `char`:
-
-  - an integer value in the following interval `[-128, 127]`
-
 - `float32` and `float64`:
 
   - a decimal number using a dot (`.`) as the separator between the integer-part and fractional-part.
@@ -209,6 +202,17 @@ Depending on the type the following values are valid:
 - `string`:
 
   - a string value which can optionally be quoted with either single quotes (`'`) or double quotes (`"`)
+
+<div class="alert alert-warning" markdown="1">
+  <b>DEPRECATED</b>
+  - `byte`:
+  
+    - same as int8
+  
+  - `char`:
+  
+    - same as uint8
+</div>
 
 ### Service file format
 
